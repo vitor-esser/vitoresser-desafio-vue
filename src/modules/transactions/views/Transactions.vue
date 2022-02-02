@@ -6,7 +6,7 @@
         <Input />
         <Select />
       </div>
-      <Table />
+      <Table @id-transaction="openModal" />
     </div>
   </div>
 </template>
@@ -27,7 +27,9 @@ import Table from '@/modules/transactions/components/Table.vue'
   },
 })
 export default class Transactions extends Vue {
-
+  openModal(id: string) {
+    console.log(id)
+  }
 }
 </script>
 
