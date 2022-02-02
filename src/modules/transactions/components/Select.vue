@@ -18,6 +18,7 @@ export default class Select extends Vue {}
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap');
 .select-div {
   margin-left: 40px;
   height: 100%;
@@ -28,6 +29,7 @@ export default class Select extends Vue {}
   padding: 5px 0px;
   position: relative;
   box-sizing: border-box;
+  font-family: 'Roboto Condensed', sans-serif;
 }
 .select-dropdown {
   position: relative;

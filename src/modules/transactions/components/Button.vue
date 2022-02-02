@@ -1,23 +1,29 @@
 <template>
-  <div>
-    <button class="button-transaction">
-      Ver Transação
-    </button>
-  </div>
+  <button @click="onClick" class="button-transaction">
+    {{text}}
+  </button>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop } from "vue-property-decorator";
 
 @Component
-export default class Button extends Vue {}
+export default class Button extends Vue {
+  @Prop({type: String, required: true})
+  private text!: ''
+
+  @Prop({type: Function, required: true})
+  private onClick!: () => any
+}
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap');
 .button-transaction {
   text-align: center;
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.9rem;
+  font-family: 'Roboto Condensed', sans-serif;
   border-width: 1px;
   border-style: solid;
   border-color: var(--accent);

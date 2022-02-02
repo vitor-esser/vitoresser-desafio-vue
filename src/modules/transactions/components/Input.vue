@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <input id="input-search" type="text">
-  </div>
+  <input id="input-search" type="text">
 </template>
 
 <script lang="ts">
@@ -14,16 +12,16 @@ export default class Input extends Vue {
 </script>
 
 <style scoped>
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap');
 #input-search {
   font-size: 1rem;
+  font-family: 'Roboto Condensed', sans-serif;
   border-width: 1px;
   border-style: solid;
   border-color: var(--accent);
   border-radius: 5px;
   text-align: left;
   outline: transparent;
-  width: 100%;
-  height: 100%;
   transition: border-color calc(var(--transition, 0.2) * 1s) ease;
 }
 </style>

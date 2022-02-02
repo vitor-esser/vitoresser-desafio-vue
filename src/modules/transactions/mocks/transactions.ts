@@ -1,6 +1,6 @@
 import ITransactions from "../interfaces/ITransactions"
 
-export const transactions: ITransactions[] =
+export const Transactions: ITransactions[] =
   [
     {
       "id": "5f89f9f257fe42957bf6dbfd",
