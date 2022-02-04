@@ -8,6 +8,7 @@
       </div>
       <Table @id-transaction="openModal" />
     </div>
+    <Modal v-if="showModal == true" :idTransaction="idTransaction" :onClick="() => closeModal()" />
   </div>
 </template>
 
@@ -17,6 +18,7 @@ import Menu from '@/components/Menu/Menu.vue'
 import Input from '@/modules/transactions/components/Input.vue'
 import Select from '@/modules/transactions/components/Select.vue'
 import Table from '@/modules/transactions/components/Table.vue'
+import Modal from '@/modules/transactions/components/Modal.vue'
 
 @Component({
   components: {
@@ -24,11 +26,20 @@ import Table from '@/modules/transactions/components/Table.vue'
     Input,
     Select,
     Table,
+    Modal,
   },
 })
 export default class Transactions extends Vue {
+  private showModal = false
+  private idTransaction: string
+
   openModal(id: string) {
-    console.log(id)
+    this.idTransaction = id
+    this.showModal = true
+  }
+
+  closeModal() {
+    this.showModal = false
   }
 }
 </script>
