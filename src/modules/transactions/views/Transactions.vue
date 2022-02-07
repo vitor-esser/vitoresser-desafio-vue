@@ -8,7 +8,7 @@
       </div>
       <Table @id-transaction="openModal" />
     </div>
-    <Modal v-if="showModal == true" :idTransaction="idTransaction" :onClick="() => closeModal()" />
+    <Modal v-if="showModal" :idTransaction="idTransaction" :onClick="() => closeModal()" />
   </div>
 </template>
 
