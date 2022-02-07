@@ -71,7 +71,13 @@ export default class Modal extends Vue {
   }
 
   setProgressBarStatus(): void {
-    this.progressBarStatus = this.transaction.status == 'Solicitada' ? 10 : this.transaction.status == 'Processando' ? 50 : 100   
+    const status: { [string: string]: number } = {
+      Solicitada: 10,
+      Processando: 50,
+      Concluida: 100,
+    };
+
+    this.progressBarStatus = status[this.transaction.status];
   }
 
   created() {
