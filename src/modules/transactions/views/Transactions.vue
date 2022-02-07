@@ -30,8 +30,8 @@ import Modal from '@/modules/transactions/components/Modal.vue'
   },
 })
 export default class Transactions extends Vue {
-  private showModal = false
-  private idTransaction: string
+  private showModal: boolean = false
+  private idTransaction: string = ''
 
   openModal(id: string) {
     this.idTransaction = id
