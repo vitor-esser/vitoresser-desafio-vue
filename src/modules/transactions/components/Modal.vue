@@ -133,7 +133,6 @@ export default class Modal extends Vue {
 }
 .state-progress-bar {
   height: 1rem;
-  /* background-color: #5ed55e; */
   background-color: #e02b57;
   border-radius: 10px;
 }
