@@ -8,7 +8,7 @@
       </div>
       <Table @id-transaction="openModal" />
     </div>
-    <Modal v-if="showModal" :idTransaction="idTransaction" :onClick="() => closeModal()" />
+    <Modal v-if="showModal" :idTransaction="idTransaction" :onClick="closeModal" />
   </div>
 </template>
 
@@ -30,8 +30,8 @@ import Modal from '@/modules/transactions/components/Modal.vue'
   },
 })
 export default class Transactions extends Vue {
-  private showModal: boolean = false
-  private idTransaction: string = ''
+  private showModal = false
+  private idTransaction = ''
 
   openModal(id: string) {
     this.idTransaction = id
