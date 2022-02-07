@@ -62,8 +62,8 @@ export default class Modal extends Vue {
   @Prop({type: Function, required: true})
   private onClick!: () => void
 
-  async getOneTransaction(): void {
-    this.allTransactions.map((transaction: ITransactions) => {
+  getSelectedTransaction(): void {
+    this.allTransactions.forEach((transaction: ITransactions) => {
       if( transaction.id === this.idTransaction) {
         this.transaction = transaction
       }
@@ -75,7 +75,7 @@ export default class Modal extends Vue {
   }
 
   created() {
-    this.getOneTransaction()
+    this.getSelectedTransaction()
     this.setProgressBarStatus()
   }
 }
