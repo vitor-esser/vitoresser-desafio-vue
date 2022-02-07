@@ -1,10 +1,10 @@
 export default interface ITransactions {
-  id: String
-  title: String
-  description: String
-  status: String
-  amount: Number
-  date: String
-  from: String
-  to: String
+  id: string
+  title: string
+  description: string
+  status: string
+  amount: number
+  date: string
+  from: string
+  to: string
 }
