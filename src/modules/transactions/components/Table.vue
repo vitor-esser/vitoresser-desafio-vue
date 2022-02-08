@@ -12,7 +12,7 @@
         <td>{{transaction.description}}</td>
         <td>{{transaction.status}}</td>
         <td>{{transaction.amount | moneyFormat}}</td>
-        <td><Button text="Ver Transação" :onClick="() => openModalTransaction(transaction.id)" /></td>
+        <td><Button text="Ver Transação" :onClick="() => passIdTransaction(transaction.id)" /></td>
       </tr>
   </table>
 </template>
@@ -34,8 +34,8 @@ import { Transactions } from "../mocks/transactions"
 export default class Table extends Vue {
   private transactions = Transactions
 
-  openModalTransaction(id: string) {
-    alert(id)
+  passIdTransaction(id: string) {
+    this.$emit('id-transaction', id)
   }
 }
 </script>
