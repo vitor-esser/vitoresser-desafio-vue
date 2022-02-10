@@ -21,7 +21,8 @@
 import { Component, Vue } from "vue-property-decorator";
 import { moneyFormat } from '@/helpers/moneyFormat'
 import Button from '@/modules/transactions/components/Button.vue'
-import { Transactions } from "../mocks/transactions"
+import {ITransactions} from "@/modules/transactions/interfaces/ITransactions";
+import transactionSingleton from '@/modules/transactions/services'
 
 @Component({
   filters: {
@@ -32,10 +33,18 @@ import { Transactions } from "../mocks/transactions"
   }
 })
 export default class Table extends Vue {
-  private transactions = Transactions
+  public transactions: ITransactions[] = []
+
+  async getAllTransactions() {
+    this.transactions = await transactionSingleton.getAllTransactions()
+  }
 
   passIdTransaction(id: string) {
     this.$emit('id-transaction', id)
+  }
+  
+  created() {
+    this.getAllTransactions()
   }
 }
 </script>
