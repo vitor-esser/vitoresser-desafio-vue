@@ -1,6 +1,7 @@
 <template>
   <div class="modal-backdrop">
-    <div v-if="!isLoading" class="modal">
+    <Loader v-if="isLoading" />
+    <div v-else class="modal">
       <div class="modal-header">
         <h1 class="text-header">{{textHeader || transaction.title}}</h1>
         <img @click="onClick" class="button-close-modal" src="@/assets/closed.png" alt="Botão de fechar">
@@ -42,8 +43,12 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 import {ITransactions} from "@/modules/transactions/interfaces/ITransactions"
 import { moneyFormat } from '@/helpers/moneyFormat'
 import transactionSingleton from '@/modules/transactions/services'
+import Loader from '@/modules/transactions/components/Loader.vue'
 
 @Component({
+  components: {
+    Loader,
+  },
   filters: {
     moneyFormat
   },
@@ -64,9 +69,15 @@ export default class Modal extends Vue {
 
   async getSelectedTransaction() {
     this.isLoading = true
-    this.transaction = await transactionSingleton.getTransaction(this.idTransaction)
-    this.setProgressBarStatus()
-    this.isLoading = false
+    try {
+      this.transaction = await transactionSingleton.getTransaction(this.idTransaction)
+      this.setProgressBarStatus()
+    } catch (error) {
+      alert('Não foi possível buscar a transação específica.\n\nTente novamente daqui alguns instantes!')
+      this.onClick()
+    } finally {
+      this.isLoading = false
+    }
   }
 
   setProgressBarStatus(): void {

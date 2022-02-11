@@ -1,5 +1,7 @@
 <template>
-  <table class="table-transactions">
+  <div>
+    <Loader v-if="isLoading" />
+    <table v-else class="table-transactions">
       <tr>
         <th>Título</th>
         <th>Descrição</th>
@@ -8,49 +10,65 @@
         <th>Visualizar</th>
       </tr>
       <tr v-for="transaction in transactions" :key="transaction.id">
-        <td>{{transaction.title}}</td>
-        <td>{{transaction.description}}</td>
-        <td>{{transaction.status}}</td>
-        <td>{{transaction.amount | moneyFormat}}</td>
-        <td><Button text="Ver Transação" :onClick="() => passIdTransaction(transaction.id)" /></td>
+        <td>{{ transaction.title }}</td>
+        <td>{{ transaction.description }}</td>
+        <td>{{ transaction.status }}</td>
+        <td>{{ transaction.amount | moneyFormat }}</td>
+        <td>
+          <Button
+            text="Ver Transação"
+            :onClick="() => passIdTransaction(transaction.id)"
+          />
+        </td>
       </tr>
-  </table>
+    </table>
+  </div>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from "vue-property-decorator";
-import { moneyFormat } from '@/helpers/moneyFormat'
-import Button from '@/modules/transactions/components/Button.vue'
-import {ITransactions} from "@/modules/transactions/interfaces/ITransactions";
-import transactionSingleton from '@/modules/transactions/services'
+import { moneyFormat } from "@/helpers/moneyFormat";
+import Button from "@/modules/transactions/components/Button.vue";
+import Loader from "@/modules/transactions/components/Loader.vue";
+import { ITransactions } from "@/modules/transactions/interfaces/ITransactions";
+import transactionSingleton from "@/modules/transactions/services";
 
 @Component({
   filters: {
-    moneyFormat
+    moneyFormat,
   },
   components: {
-    Button
-  }
+    Button,
+    Loader,
+  },
 })
 export default class Table extends Vue {
-  public transactions: ITransactions[] = []
+  public transactions: ITransactions[] = [];
+  public isLoading = false
 
   async getAllTransactions() {
-    this.transactions = await transactionSingleton.getAllTransactions()
+    this.isLoading = true
+    try {
+      this.transactions = await transactionSingleton.getAllTransactions();
+    } catch (error) {
+      alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')
+    } finally {
+      this.isLoading = false
+    }
   }
 
   passIdTransaction(id: string) {
-    this.$emit('id-transaction', id)
+    this.$emit("id-transaction", id);
   }
-  
+
   created() {
-    this.getAllTransactions()
+    this.getAllTransactions();
   }
 }
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@300&display=swap");
 .table-transactions {
   margin-top: 2rem;
 }
@@ -60,16 +78,16 @@ table {
   border-spacing: 0;
   border-collapse: collapse;
   border: 1px solid #ddd;
-  font-family: 'Roboto Condensed', sans-serif;
+  font-family: "Roboto Condensed", sans-serif;
 }
 
-th, td {
+th,
+td {
   text-align: left;
   padding: 8px;
 }
 
 tr:nth-child(even) {
-  background-color: #f2f2f2
+  background-color: #f2f2f2;
 }
-
 </style>
