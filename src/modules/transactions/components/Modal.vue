@@ -54,13 +54,13 @@ export default class Modal extends Vue {
   private isLoading = false
 
   @Prop({type: String, required: true})
-  private idTransaction!: string
+  readonly idTransaction!: string
 
   @Prop({type: String, required: false})
-  private textHeader!: string
+  readonly textHeader?: string
 
   @Prop({type: Function, required: true})
-  private onClick!: () => void
+  readonly onClick!: () => void
 
   async getSelectedTransaction() {
     this.isLoading = true
