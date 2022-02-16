@@ -1,20 +1,37 @@
 <template>
   <div class="select-div">
     <div class="select-dropdown">
-      <select>
-        <option value="Option 1">Processando</option>
-        <option value="Option 2">Solicitada</option>
-        <option value="Option 3">Concluída</option>
+      <select v-model="valueSelected">
+        <option value="created">Solicitada</option>
+        <option value="processing">Processando</option>
+        <option value="processed">Concluída</option>
+        <option value="all">Todas</option>
       </select>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Watch, Emit } from "vue-property-decorator";
 
 @Component
-export default class Select extends Vue {}
+export default class Select extends Vue {
+  public valueSelected = 'all'
+
+  @Watch('valueSelected')
+  onChildChanged(val: string, oldVal: string) {
+    this.changeSelectValue(val)
+  }
+  
+  @Emit()
+  changeSelectValue(value: string) {
+    return value 
+  }
+  
+  created() {
+    this.changeSelectValue(this.valueSelected)
+  }
+}
 </script>
 
 <style scoped>

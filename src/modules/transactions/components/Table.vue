@@ -9,7 +9,7 @@
         <th>Valor</th>
         <th>Visualizar</th>
       </tr>
-      <tr v-for="transaction in transactions" :key="transaction.id">
+      <tr v-for="transaction in auxTransactions" :key="transaction.id">
         <td>{{ transaction.title }}</td>
         <td>{{ transaction.description }}</td>
         <td>{{ transaction.status }}</td>
@@ -22,11 +22,14 @@
         </td>
       </tr>
     </table>
+    <div v-if="auxTransactions.length === 0 && !isLoading">
+      <p class="no-transactions">Não foi encontrada nenhuma transação!</p>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
+import { Component, Vue, Prop, Watch } from "vue-property-decorator";
 import { moneyFormat } from "@/helpers/moneyFormat";
 import Button from "@/modules/transactions/components/Button.vue";
 import Loader from "@/modules/transactions/components/Loader.vue";
@@ -43,13 +46,51 @@ import transactionSingleton from "@/modules/transactions/services";
   },
 })
 export default class Table extends Vue {
-  public transactions: ITransactions[] = [];
+  private transactions: ITransactions[] = []
+  public auxTransactions: ITransactions[] = []
   public isLoading = false
+
+  @Prop({type: String, required: true})
+  readonly selectValue!: string
+
+  @Prop({type: String, required: true})
+  readonly inputValue!: string
+
+  @Watch('inputValue')
+  onInputValueChanged() {
+    this.filter()
+  }
+
+  @Watch('selectValue')
+  onSelectValueChanged() {
+    this.filter()
+  }
+
+  filter(){
+    this.auxTransactions = this.transactions
+    this.isLoading = true
+
+    if (this.inputValue != '') {
+      this.auxTransactions = this.auxTransactions.filter(element => {
+        return element.title.toUpperCase().match(new RegExp(this.inputValue.toUpperCase())) ||
+          element.description.toUpperCase().match(new RegExp(this.inputValue.toUpperCase()))
+      })
+    }
+
+    if (this.selectValue != 'all') {
+      this.auxTransactions = this.auxTransactions.filter(element => {
+        return element.status == this.selectValue
+      })
+    }
+
+    this.isLoading = false
+  }
 
   async getAllTransactions() {
     this.isLoading = true
     try {
       this.transactions = await transactionSingleton.getAllTransactions();
+      this.auxTransactions = this.transactions
     } catch (error) {
       alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')
     } finally {
@@ -89,5 +130,12 @@ td {
 
 tr:nth-child(even) {
   background-color: #f2f2f2;
+}
+
+.no-transactions {
+  font-family: "Roboto Condensed", sans-serif;
+  text-align: center;
+  font-weight: bold;
+  margin-top: 3rem;
 }
 </style>

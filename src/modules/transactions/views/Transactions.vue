@@ -3,10 +3,10 @@
     <Menu />
     <div class="container-transactions">
       <div class="row-filters">
-        <Input />
-        <Select />
+        <Input @change-input="inputValueChange" />
+        <Select @change-select-value="selectValueChange" />
       </div>
-      <Table @id-transaction="openModal" />
+      <Table @id-transaction="openModal" :inputValue="inputValue" :selectValue="selectValue" />
     </div>
     <Modal v-if="showModal" :idTransaction="idTransaction" :onClick="closeModal" />
   </div>
@@ -19,6 +19,7 @@ import Input from '@/modules/transactions/components/Input.vue'
 import Select from '@/modules/transactions/components/Select.vue'
 import Table from '@/modules/transactions/components/Table.vue'
 import Modal from '@/modules/transactions/components/Modal.vue'
+import { debounce } from 'lodash-es'
 
 @Component({
   components: {
@@ -32,6 +33,9 @@ import Modal from '@/modules/transactions/components/Modal.vue'
 export default class Transactions extends Vue {
   private showModal = false
   private idTransaction = ''
+  public selectValue = ''
+  public inputValue = ''
+  public inputValueChange = debounce(this.inputValueChanged, 600)
 
   openModal(id: string) {
     this.idTransaction = id
@@ -40,6 +44,14 @@ export default class Transactions extends Vue {
 
   closeModal() {
     this.showModal = false
+  }
+
+  inputValueChanged(value: string) {
+    this.inputValue = value
+  }
+
+  selectValueChange(value: string) {
+    this.selectValue = value
   }
 }
 </script>
