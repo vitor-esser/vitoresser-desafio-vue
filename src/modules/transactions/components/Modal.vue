@@ -1,6 +1,7 @@
 <template>
   <div class="modal-backdrop">
-    <div class="modal">
+    <Loader v-if="isLoading" />
+    <div v-else class="modal">
       <div class="modal-header">
         <h1 class="text-header">{{textHeader || transaction.title}}</h1>
         <img @click="onClick" class="button-close-modal" src="@/assets/closed.png" alt="Botão de fechar">
@@ -39,42 +40,51 @@
 
 <script lang="ts">
 import { Component, Vue, Prop } from "vue-property-decorator";
-import { Transactions } from "../mocks/transactions"
-import ITransactions from "@/modules/transactions/interfaces/ITransactions"
+import {ITransactions} from "@/modules/transactions/interfaces/ITransactions"
 import { moneyFormat } from '@/helpers/moneyFormat'
+import transactionSingleton from '@/modules/transactions/services'
+import Loader from '@/modules/transactions/components/Loader.vue'
 
 @Component({
+  components: {
+    Loader,
+  },
   filters: {
     moneyFormat
   },
 })
 export default class Modal extends Vue {
-  private allTransactions = Transactions
-  private transaction: ITransactions
-  private progressBarStatus: number
+  public transaction = {} as ITransactions
+  public progressBarStatus!: number
+  private isLoading = false
 
   @Prop({type: String, required: true})
-  private idTransaction: string
+  readonly idTransaction!: string
 
   @Prop({type: String, required: false})
-  private textHeader: string
+  readonly textHeader?: string
 
   @Prop({type: Function, required: true})
-  private onClick!: () => void
+  readonly onClick!: () => void
 
-  getSelectedTransaction(): void {
-    this.allTransactions.forEach((transaction: ITransactions) => {
-      if( transaction.id === this.idTransaction) {
-        this.transaction = transaction
-      }
-    })
+  async getSelectedTransaction() {
+    this.isLoading = true
+    try {
+      this.transaction = await transactionSingleton.getTransaction(this.idTransaction)
+      this.setProgressBarStatus()
+    } catch (error) {
+      alert('Não foi possível buscar a transação específica.\n\nTente novamente daqui alguns instantes!')
+      this.onClick()
+    } finally {
+      this.isLoading = false
+    }
   }
 
   setProgressBarStatus(): void {
     const status: { [string: string]: number } = {
-      Solicitada: 10,
-      Processando: 50,
-      Concluida: 100,
+      created: 10,
+      processing: 50,
+      processed: 100,
     };
 
     this.progressBarStatus = status[this.transaction.status];
@@ -82,7 +92,6 @@ export default class Modal extends Vue {
 
   created() {
     this.getSelectedTransaction()
-    this.setProgressBarStatus()
   }
 }
 </script>

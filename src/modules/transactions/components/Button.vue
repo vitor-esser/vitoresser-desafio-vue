@@ -10,10 +10,10 @@ import { Component, Vue, Prop } from "vue-property-decorator";
 @Component
 export default class Button extends Vue {
   @Prop({type: String, required: true})
-  private text!: ''
+  readonly text!: ''
 
   @Prop({type: Function, required: true})
-  private onClick!: () => any
+  readonly onClick!: () => any
 }
 </script>
 
