@@ -24,6 +24,11 @@
     </table>
     <div v-if="auxTransactions.length === 0 && !isLoading">
       <p class="no-transactions">Não foi encontrada nenhuma transação!</p>
+			<p>teste</p>
+      {{testeValue}}
+  
+      <p>{{teste}}</p>
+      <p>teste</p>
     </div>
   </div>
 </template>
@@ -36,6 +41,11 @@ import Loader from "@/modules/transactions/components/Loader.vue";
 import { ITransactions } from "@/modules/transactions/interfaces/ITransactions";
 import transactionSingleton from "@/modules/transactions/services";
 
+import { namespace } from 'vuex-class';
+// const TransactionsStoreModule = namespace('TransactionsModule');
+
+import { TransactionsStoreModule } from '@/modules/transactions/store/module'
+
 @Component({
   filters: {
     moneyFormat,
@@ -46,9 +56,19 @@ import transactionSingleton from "@/modules/transactions/services";
   },
 })
 export default class Table extends Vue {
+	// @TransactionsStoreModule.Getter('teste') private testeValue!: string
+	// @TransactionsStoreModule.Action('getAllTransactions') 
+	// private allTransactionsAction!: () => []
+
+	// @TransactionsStoreModule.Getter('transactionsData') private transactionValue!: ITransactions[]
+
   private transactions: ITransactions[] = []
   public auxTransactions: ITransactions[] = []
   public isLoading = false
+
+  public get teste() {
+    return TransactionsStoreModule.teste
+  }
 
   @Prop({type: String, required: true})
   readonly selectValue!: string
@@ -89,7 +109,9 @@ export default class Table extends Vue {
   async getAllTransactions() {
     this.isLoading = true
     try {
-      this.transactions = await transactionSingleton.getAllTransactions();
+			// this.transactions = await this.allTransactionsAction()
+
+      // this.transactions = await transactionSingleton.getAllTransactions();
       this.auxTransactions = this.transactions
     } catch (error) {
       alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')

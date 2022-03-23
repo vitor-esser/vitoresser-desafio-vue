@@ -45,6 +45,9 @@ import { moneyFormat } from '@/helpers/moneyFormat'
 import transactionSingleton from '@/modules/transactions/services'
 import Loader from '@/modules/transactions/components/Loader.vue'
 
+import { namespace } from 'vuex-class';
+const TransactionsStoreModule = namespace('TransactionsModule');
+
 @Component({
   components: {
     Loader,
@@ -54,6 +57,9 @@ import Loader from '@/modules/transactions/components/Loader.vue'
   },
 })
 export default class Modal extends Vue {
+	// @TransactionsStoreModule.Action('getSpecificTransaction') 
+	// private specificTransactionAction!: (idTransaction: string) => []
+
   public transaction = {} as ITransactions
   public progressBarStatus!: number
   private isLoading = false
@@ -70,7 +76,8 @@ export default class Modal extends Vue {
   async getSelectedTransaction() {
     this.isLoading = true
     try {
-      this.transaction = await transactionSingleton.getTransaction(this.idTransaction)
+			// this.transaction = await this.specificTransactionAction(this.idTransaction)
+      // this.transaction = await transactionSingleton.getTransaction(this.idTransaction)
       this.setProgressBarStatus()
     } catch (error) {
       alert('Não foi possível buscar a transação específica.\n\nTente novamente daqui alguns instantes!')
