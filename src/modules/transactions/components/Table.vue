@@ -24,11 +24,6 @@
     </table>
     <div v-if="auxTransactions.length === 0 && !isLoading">
       <p class="no-transactions">Não foi encontrada nenhuma transação!</p>
-			<p>teste</p>
-      {{testeValue}}
-  
-      <p>{{teste}}</p>
-      <p>teste</p>
     </div>
   </div>
 </template>
@@ -42,9 +37,7 @@ import { ITransactions } from "@/modules/transactions/interfaces/ITransactions";
 import transactionSingleton from "@/modules/transactions/services";
 
 import { namespace } from 'vuex-class';
-// const TransactionsStoreModule = namespace('TransactionsModule');
-
-import { TransactionsStoreModule } from '@/modules/transactions/store/module'
+const TransactionsStoreModule = namespace('TransactionsModule');
 
 @Component({
   filters: {
@@ -56,19 +49,16 @@ import { TransactionsStoreModule } from '@/modules/transactions/store/module'
   },
 })
 export default class Table extends Vue {
-	// @TransactionsStoreModule.Getter('teste') private testeValue!: string
-	// @TransactionsStoreModule.Action('getAllTransactions') 
-	// private allTransactionsAction!: () => []
+	@TransactionsStoreModule.Getter('transactionsData')
+	private transactionsData!: ITransactions[]
 
-	// @TransactionsStoreModule.Getter('transactionsData') private transactionValue!: ITransactions[]
+  @TransactionsStoreModule.Action('getAllTransactions')
+	// eslint-disable-next-line
+	private allTransactionsAction!: Function
 
   private transactions: ITransactions[] = []
   public auxTransactions: ITransactions[] = []
   public isLoading = false
-
-  public get teste() {
-    return TransactionsStoreModule.teste
-  }
 
   @Prop({type: String, required: true})
   readonly selectValue!: string
@@ -106,18 +96,23 @@ export default class Table extends Vue {
     this.isLoading = false
   }
 
-  async getAllTransactions() {
-    this.isLoading = true
-    try {
-			// this.transactions = await this.allTransactionsAction()
+  async teste() {
+    console.log('bla')
+		this.isLoading = true
+		await this.allTransactionsAction()
+    // try {
+		// 	console.log('teste-1')
+		// 	console.log('teste-2')
+		// 	// this.transactions = this.transactionsData
+		// 	// console.log(this.transactions)
 
-      // this.transactions = await transactionSingleton.getAllTransactions();
-      this.auxTransactions = this.transactions
-    } catch (error) {
-      alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')
-    } finally {
-      this.isLoading = false
-    }
+    //   // this.transactions = await transactionSingleton.getAllTransactions();
+    //   // this.auxTransactions = this.transactions
+    // } catch (error) {
+    //   alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')
+    // } finally {
+    //   this.isLoading = false
+    // }
   }
 
   passIdTransaction(id: string) {
@@ -125,7 +120,8 @@ export default class Table extends Vue {
   }
 
   created() {
-    this.getAllTransactions();
+    // this.teste();
+    this.allTransactionsAction()
   }
 }
 </script>
