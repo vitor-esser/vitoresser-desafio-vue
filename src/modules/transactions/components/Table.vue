@@ -34,10 +34,9 @@ import { moneyFormat } from "@/helpers/moneyFormat";
 import Button from "@/modules/transactions/components/Button.vue";
 import Loader from "@/modules/transactions/components/Loader.vue";
 import { ITransactions } from "@/modules/transactions/interfaces/ITransactions";
-import transactionSingleton from "@/modules/transactions/services";
 
-import { namespace } from 'vuex-class';
-const TransactionsStoreModule = namespace('TransactionsModule');
+import { getModule } from 'vuex-module-decorators';
+import { TransactionsModule } from '@/store/modules/transactions'
 
 @Component({
   filters: {
@@ -49,15 +48,10 @@ const TransactionsStoreModule = namespace('TransactionsModule');
   },
 })
 export default class Table extends Vue {
-	@TransactionsStoreModule.Getter('transactionsData')
-	private transactionsData!: ITransactions[]
+	public transactionsModule = getModule(TransactionsModule, this.$store)
 
-  @TransactionsStoreModule.Action('getAllTransactions')
-	// eslint-disable-next-line
-	private allTransactionsAction!: Function
-
-  private transactions: ITransactions[] = []
-  public auxTransactions: ITransactions[] = []
+  private transactions: ITransactions[] | undefined = []
+  public auxTransactions: ITransactions[] | undefined = []
   public isLoading = false
 
   @Prop({type: String, required: true})
@@ -80,14 +74,14 @@ export default class Table extends Vue {
     this.auxTransactions = this.transactions
     this.isLoading = true
 
-    if (this.inputValue != '') {
+    if (this.inputValue != '' && this.auxTransactions) {
       this.auxTransactions = this.auxTransactions.filter(element => {
         return element.title.toUpperCase().match(new RegExp(this.inputValue.toUpperCase())) ||
           element.description.toUpperCase().match(new RegExp(this.inputValue.toUpperCase()))
       })
     }
 
-    if (this.selectValue != 'all') {
+    if (this.selectValue != 'all' && this.auxTransactions) {
       this.auxTransactions = this.auxTransactions.filter(element => {
         return element.status == this.selectValue
       })
@@ -96,23 +90,16 @@ export default class Table extends Vue {
     this.isLoading = false
   }
 
-  async teste() {
-    console.log('bla')
+  async getAllTransactions() {
 		this.isLoading = true
-		await this.allTransactionsAction()
-    // try {
-		// 	console.log('teste-1')
-		// 	console.log('teste-2')
-		// 	// this.transactions = this.transactionsData
-		// 	// console.log(this.transactions)
-
-    //   // this.transactions = await transactionSingleton.getAllTransactions();
-    //   // this.auxTransactions = this.transactions
-    // } catch (error) {
-    //   alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')
-    // } finally {
-    //   this.isLoading = false
-    // }
+    try {
+			this.transactions = await this.transactionsModule.getAllTransactions()
+      this.auxTransactions = this.transactions
+    } catch (error) {
+      alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')
+    } finally {
+      this.isLoading = false
+    }
   }
 
   passIdTransaction(id: string) {
@@ -120,8 +107,7 @@ export default class Table extends Vue {
   }
 
   created() {
-    // this.teste();
-    this.allTransactionsAction()
+		this.getAllTransactions()
   }
 }
 </script>

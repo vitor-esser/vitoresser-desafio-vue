@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { TransactionsStoreModule } from '@/modules/transactions/store/module'
+import { TransactionsModule } from './modules/transactions'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store ({
 	modules: {
-		TransactionsModule: TransactionsStoreModule
+		TransactionsModule: TransactionsModule
 	}
 })
