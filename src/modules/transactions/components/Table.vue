@@ -34,7 +34,9 @@ import { moneyFormat } from "@/helpers/moneyFormat";
 import Button from "@/modules/transactions/components/Button.vue";
 import Loader from "@/modules/transactions/components/Loader.vue";
 import { ITransactions } from "@/modules/transactions/interfaces/ITransactions";
-import transactionSingleton from "@/modules/transactions/services";
+
+import { getModule } from 'vuex-module-decorators';
+import { TransactionsModule } from '@/store/modules/transactions'
 
 @Component({
   filters: {
@@ -46,8 +48,10 @@ import transactionSingleton from "@/modules/transactions/services";
   },
 })
 export default class Table extends Vue {
-  private transactions: ITransactions[] = []
-  public auxTransactions: ITransactions[] = []
+	public transactionsModule = getModule(TransactionsModule, this.$store)
+
+  private transactions: ITransactions[] | undefined = []
+  public auxTransactions: ITransactions[] | undefined = []
   public isLoading = false
 
   @Prop({type: String, required: true})
@@ -70,14 +74,14 @@ export default class Table extends Vue {
     this.auxTransactions = this.transactions
     this.isLoading = true
 
-    if (this.inputValue != '') {
+    if (this.inputValue != '' && this.auxTransactions) {
       this.auxTransactions = this.auxTransactions.filter(element => {
         return element.title.toUpperCase().match(new RegExp(this.inputValue.toUpperCase())) ||
           element.description.toUpperCase().match(new RegExp(this.inputValue.toUpperCase()))
       })
     }
 
-    if (this.selectValue != 'all') {
+    if (this.selectValue != 'all' && this.auxTransactions) {
       this.auxTransactions = this.auxTransactions.filter(element => {
         return element.status == this.selectValue
       })
@@ -87,9 +91,9 @@ export default class Table extends Vue {
   }
 
   async getAllTransactions() {
-    this.isLoading = true
+		this.isLoading = true
     try {
-      this.transactions = await transactionSingleton.getAllTransactions();
+			this.transactions = await this.transactionsModule.getAllTransactions()
       this.auxTransactions = this.transactions
     } catch (error) {
       alert('Não foi possível buscar as transações.\n\nTente novamente daqui alguns instantes!')
@@ -103,7 +107,7 @@ export default class Table extends Vue {
   }
 
   created() {
-    this.getAllTransactions();
+		this.getAllTransactions()
   }
 }
 </script>
